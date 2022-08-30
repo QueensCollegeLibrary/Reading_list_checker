@@ -17,7 +17,7 @@ In the main.py file, put in the correct path to reading list metadata XML file a
 
   The code will check for matches in the following ways:
   1. Title: If the citation title in the reading list is wholly contained in any title in your holdings (case and punctuation are ignored) it will be a title match. NOTE: the flaw in this is that a book entitled e.g. "Ancient Rome" will be matched with any title with the words "ancient rome" consecutively in the title.
-  2. Author: The code attempts to find the surname in citations by using the second word in the author string, or third word if the second is only 1 initial. It then checks if this surname appears in author fields in your holdings. NOTE: multiple flaws with this. Names that don't use Given_name Surname structure might not be checked properly; editors are not checked; when there are multiple authors, it checks only the first author given in the citation against the author in the 100 field of the MARC record.
+  2. Author: The code attempts to find the surname in citations by using the second word in the author string, or third word if the second is only 1 initial. It then checks if this surname appears in author fields in your holdings. NOTE: multiple flaws with this. Names that don't use Given_name Surname structure might not be checked properly; editors are not checked; when there are multiple authors, it checks only the first author given in the citation against the author in the 100 field of the MARC record; the citation will generally use the author's name as it is written in the book, while a MARC 100 field will use the authorised form.
   3. Date: Checks the citation date against the "Begin publication date" in the holdings.
   
 # Output
