@@ -7,12 +7,12 @@ Method for automatically checking word-processed reading lists against Alma hold
 2. Download your holdings as XML.
 3. Input the file path in the create_dicts.py code and run.
 
-# Extracting metadata from reading lists
+# Extract metadata from reading lists
 1. Copy and paste citations from reading lists into https://anystyle.io/.
 2. Save metadata as XML.
 3. In the XML file, find all <container-title> tags and change to <containertitle>.
   
-# Checking reading list XML against holdings dictionary
+# Check reading list XML against holdings dictionary
 In the main.py file, put in the correct path to reading list metadata XML file and run.
 
   The code will check for matches in the following ways:
