@@ -1,8 +1,8 @@
 # Reading_list_checker
 Method for automatically checking word-processed reading lists against Alma holdings.
 
-# Turn Alma holdings into python dictionary
-[This only needs to be done periodically to keep holdings updated, not for every reading list you check]
+# Turn Alma holdings into Python dictionary
+**This only needs to be done periodically to keep holdings updated, not for every reading list you check.**
 1. In Alma Analytics, use the Shelflist (holdings records) report for your library and the records you want to check against.
 2. Download your holdings as XML.
 3. Input the file path in the create_dicts.py code and run.
@@ -21,7 +21,7 @@ In the main.py file, put in the correct path to reading list metadata XML file a
   3. Date: Checks the citation date against the "Begin publication date" in the holdings.
   
 # Output
-  The code will print to the console the following:
+  The code will print the following to the console:
   1. "Perfect matches": titles in holdings matching title, author, and date to a citation.
   2. "Author and title matches": author, title, and MMSID of a holding matching auhtor and title to a citation. (could indicate a different edition)
   3. "Date and title matches": title and MMSID of a holding matching date and title to a citation. (books with editors rather than authors)
