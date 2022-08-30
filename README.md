@@ -20,7 +20,7 @@ In the main.py file, put in the correct path to reading list metadata XML file a
   2. Author: The code attempts to find the surname in citations by using the second word in the author string, or third word if the second is only 1 initial. It then checks if this surname appears in author fields in your holdings. NOTE: multiple flaws with this. Names that don't use Given_name Surname structure might not be checked properly; editors are not checked; when there are multiple authors, it checks only the first author given in the citation against the author in the 100 field of the MARC record.
   3. Date: Checks the citation date against the "Begin publication date" in the holdings.
   
-#Output
+# Output
   The code will print to the console the following:
   1. "Perfect matches": titles in holdings matching title, author, and date to a citation.
   2. "Author and title matches": author, title, and MMSID of a holding matching auhtor and title to a citation. (could indicate a different edition)
