@@ -58,6 +58,8 @@ def get_author(book):
 book_dicts = []
 for book in shelflist_soup.find_all('r'):
     book_dict = {
+    "location": book.c1.string,
+    "classmark": book.c2.string,
     "title": get_title(book),
     "author": get_author(book),
     "date": book.c10.string,
