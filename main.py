@@ -46,11 +46,11 @@ for citation in metadata_soup.find_all("sequence"):
 
 for citation in metadata_soup.find_all("sequence"):
     counter += 1
-    print(str(int(counter/total_citations*100)) + "% complete")
+    print("checking " + str(int(counter/total_citations*100)) + "% complete")
     if citation.journal is not None:
         continue
-    if citation.containertitle is not None:
-        citation_title = citation.containertitle.string
+    if citation.find("container-title") is not None:
+        citation_title = citation.find("container-title").string
     elif citation.title is not None:
         citation_title = citation.title.string
     else:
@@ -89,7 +89,7 @@ for match in author_matches:
     if match in date_matches:
         perfect_matches.append(match)
 
-print("---PERFECT MATCHES---")
+print("\n\n----PERFECT MATCHES---")
 for match in perfect_matches:
     print("\n" + match["citation"])
     print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " " + match["book"]["mmsid"])
@@ -111,4 +111,4 @@ for match in title_matches:
     if match not in author_matches:
         if match not in date_matches:
             print("\n" + match["citation"])
-            print("⮩ " + match["book"]["author"] + ", " + match["book"]["title"] + " " + match["book"]["mmsid"])
+            print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " - " + match["book"]["author"] + ", " + match["book"]["title"] + " " + match["book"]["mmsid"])
