@@ -1,8 +1,9 @@
 import json
 from bs4 import BeautifulSoup
 
+
 def remove_punctuation(string):
-    punctuation = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+    punctuation = '''!()-[]{};:'’"\;,<>./?@#$%^&*_~'''
     no_punc = ""
     for char in string:
         if char not in punctuation:
@@ -38,56 +39,76 @@ title_matches = []
 author_matches = []
 date_matches = []
 
+total_citations = 0
+counter = 0
 for citation in metadata_soup.find_all("sequence"):
+    total_citations += 1
+
+for citation in metadata_soup.find_all("sequence"):
+    counter += 1
+    print(str(int(counter/total_citations*100)) + "% complete")
     if citation.journal is not None:
         continue
     if citation.containertitle is not None:
-        xml_title = format_title(citation.containertitle.string)
+        citation_title = citation.containertitle.string
     elif citation.title is not None:
-        xml_title = format_title(citation.title.string)
+        citation_title = citation.title.string
     else:
         continue
+    xml_title = format_title(citation_title)
+    if citation.editor is not None:
+        main_entry = citation.editor.string
+    elif citation.author is not None:
+        main_entry = citation.author.string
+    else:
+        main_entry = ""
+    if citation.date is not None:
+        citation_date = citation.date.string
+    else:
+        citation_date = "[no date]"
+    formatted_citation = main_entry + " " + citation_title + " (" + remove_punctuation(citation_date) + ")"
     for book in shelflist_dicts:
         dict_title = format_title(book["title"])
         if xml_title == dict_title or xml_title in dict_title:
             book["citation_title"] = xml_title
-            title_matches.append(book)
+            title_matches.append({"citation": formatted_citation, "book": book})
             if citation.author is not None:
                 xml_author = get_surname(citation.author.string.lower())
                 dict_author = remove_punctuation(book["author"].lower())
                 if xml_author in dict_author:
-                    author_matches.append(book)
+                    author_matches.append({"citation": formatted_citation, "book": book})
             if citation.date is not None:
                 xml_date = remove_punctuation(citation.date.string)
                 dict_date = book["date"]
                 if xml_date == dict_date:
-                    date_matches.append(book)
+                    date_matches.append({"citation": formatted_citation, "book": book})
+
 
 perfect_matches = []
-for book in author_matches:
-    if book in date_matches:
-        perfect_matches.append(book)
+for match in author_matches:
+    if match in date_matches:
+        perfect_matches.append(match)
 
 print("---PERFECT MATCHES---")
-for book in perfect_matches:
-    print(book["title"])
+for match in perfect_matches:
+    print("\n" + match["citation"])
+    print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " " + match["book"]["mmsid"])
 
-print("\n---AUTHOR AND TITLE MATCHES---")
-for book in author_matches:
-    if book not in perfect_matches:
-        print(book["author"] + ": " + book["title"])
-        print(book["mmsid"])
+print("\n\n---AUTHOR AND TITLE MATCHES---")
+for match in author_matches:
+    if match not in perfect_matches:
+        print("\n" + match["citation"])
+        print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " " + match["book"]["mmsid"])
 
-print("\n---DATE AND TITLE MATCHES---")
-for book in date_matches:
-    if book not in perfect_matches:
-        print(book["title"])
-        print(book["mmsid"])
+print("\n\n---DATE AND TITLE MATCHES---")
+for match in date_matches:
+    if match not in perfect_matches:
+        print("\n" + match["citation"])
+        print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " " + match["book"]["mmsid"])
 
-print("\n---TITLE MATCHES---")
-for book in title_matches:
-    if book not in author_matches:
-        if book not in date_matches:
-            print(book["citation_title"].upper())
-            print(">" + book["title"])
-            print(">" + book["mmsid"])
+print("\n\n---TITLE MATCHES---")
+for match in title_matches:
+    if match not in author_matches:
+        if match not in date_matches:
+            print("\n" + match["citation"])
+            print("⮩ " + match["book"]["author"] + ", " + match["book"]["title"] + " " + match["book"]["mmsid"])
