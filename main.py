@@ -44,6 +44,17 @@ counter = 0
 for citation in metadata_soup.find_all("sequence"):
     total_citations += 1
 
+print(""" ___              _  _             _    _        _
+| . \ ___  ___  _| |<_>._ _  ___  | |  <_> ___ _| |_
+|   // ._><_> |/ . || || ' |/ . | | |_ | |<_-<  | |
+|_\_\\\___.<___|\___||_||_|_|\_. | |___||_|/__/  |_|
+                            <___'
+ ___  _              _
+|  _>| |_  ___  ___ | |__ ___  _ _
+| <__| . |/ ._>/ | '| / // ._>| '_>
+`___/|_|_|\___.\_|_.|_\_\\\___.|_|     \n[by HB @ Q]\n""")
+
+
 for citation in metadata_soup.find_all("sequence"):
     counter += 1
     print("checking " + str(int(counter/total_citations*100)) + "% complete")
