@@ -37,7 +37,7 @@ def get_author(book):
     else:
         author = book.c5.string
     if author.count(",") > 1:
-        author = author[0:find_nth(book.c2.string, ",", 2)]
+        author = author[0:find_nth(book.c5.string, ",", 2)]
     if "author" in author:
         author = author.replace("author", "")[:-1]
     if "(" in author:
