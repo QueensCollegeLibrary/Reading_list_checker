@@ -61,7 +61,7 @@ def get_author(book):
 book_dicts = []
 for book in books:
     book_dict = {
-    "location": book["\ufeffLocation Name"],
+    "location": book["Location Name"],
     "classmark": book["Permanent Call Number"],
     "title": get_title(book),
     "author": get_author(book),
