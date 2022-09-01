@@ -15,7 +15,9 @@ def get_surname(author):
     if len(author.split()) > 1:
         if len(remove_punctuation(author.split()[1])) > 1:
             return remove_punctuation(author.split()[1])
-        else:
+        elif len(remove_punctuation(author.split()[0])) > 1:
+            return remove_punctuation(author.split()[0])
+        elif len(author.split()) > 2:
             return remove_punctuation(author.split()[2])
     else:
         return remove_punctuation(author)
@@ -58,10 +60,10 @@ print(""" ___              _  _             _    _        _
 for citation in metadata_soup.find_all("sequence"):
     counter += 1
     print("checking " + str(int(counter/total_citations*100)) + "% complete")
-    if citation.journal is not None:
-        continue
     if citation.find("container-title") is not None:
         citation_title = citation.find("container-title").string
+    elif citation.journal is not None:
+        citation_title = citation.journal.string
     elif citation.title is not None:
         citation_title = citation.title.string
     else:
