@@ -2,6 +2,7 @@ import csv
 import json
 
 books = []
+#REMEMBER TO NAME YOUR CSV FILE "shelflist.csv"
 with open("shelflist.csv", encoding="utf-8") as file:
     reader = csv.DictReader(file)
     for book in reader:
