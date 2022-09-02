@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 
 def remove_punctuation(string):
-    punctuation = '''!()-[]{};:'’"\;,<>./?@#$%^&*_~'''
+    punctuation = '''!()-[]{};:'’‘"\;,<>./?@#$%^&*_~'''
     no_punc = ""
     for char in string:
         if char not in punctuation:
