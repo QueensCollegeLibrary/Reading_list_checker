@@ -60,15 +60,18 @@ print(""" ___              _  _             _    _        _
 for citation in metadata_soup.find_all("sequence"):
     counter += 1
     print("checking " + str(int(counter/total_citations*100)) + "% complete")
+    citation_titles = []
     if citation.find("container-title") is not None:
-        citation_title = citation.find("container-title").string
-    elif citation.journal is not None:
-        citation_title = citation.journal.string
-    elif citation.title is not None:
-        citation_title = citation.title.string
-    else:
+        citation_titles.append(citation.find("container-title").string)
+    if citation.title is not None:
+        citation_titles.append(citation.title.string)
+    if citation.journal is not None and len(citation.journal) > 1:
+        citation_titles.append(citation.journal.string)
+    if len(citation_titles) == 0:
         continue
-    xml_title = format_title(citation_title)
+    xml_titles = []
+    for title in citation_titles:
+        xml_titles.append(format_title(title))
     if citation.editor is not None:
         main_entry = citation.editor.string
     elif citation.author is not None:
@@ -79,22 +82,23 @@ for citation in metadata_soup.find_all("sequence"):
         citation_date = citation.date.string
     else:
         citation_date = "[no date]"
-    formatted_citation = main_entry + " " + citation_title + " (" + remove_punctuation(citation_date) + ")"
+    formatted_citation = main_entry + " " + citation_titles[0] + " (" + remove_punctuation(citation_date) + ")"
     for book in shelflist_dicts:
         dict_title = format_title(book["title"])
-        if xml_title == dict_title or xml_title in dict_title:
-            book["citation_title"] = xml_title
-            title_matches.append({"citation": formatted_citation, "book": book})
-            if citation.author is not None:
-                xml_author = get_surname(citation.author.string.lower())
-                dict_author = remove_punctuation(book["author"].lower())
-                if xml_author in dict_author:
-                    author_matches.append({"citation": formatted_citation, "book": book})
-            if citation.date is not None:
-                xml_date = remove_punctuation(citation.date.string)
-                dict_date = book["date"]
-                if xml_date == dict_date:
-                    date_matches.append({"citation": formatted_citation, "book": book})
+        for xml_title in xml_titles:
+            if xml_title == dict_title or xml_title in dict_title:
+                book["citation_title"] = xml_title
+                title_matches.append({"citation": formatted_citation, "book": book})
+                if citation.author is not None:
+                    xml_author = get_surname(citation.author.string.lower())
+                    dict_author = remove_punctuation(book["author"].lower())
+                    if xml_author in dict_author:
+                        author_matches.append({"citation": formatted_citation, "book": book})
+                if citation.date is not None:
+                    xml_date = remove_punctuation(citation.date.string)
+                    dict_date = book["date"]
+                    if xml_date == dict_date:
+                        date_matches.append({"citation": formatted_citation, "book": book})
 
 
 perfect_matches = []
