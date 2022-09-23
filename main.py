@@ -11,16 +11,19 @@ def remove_punctuation(string):
     return no_punc
 
 
-def get_surname(author):
-    if len(author.split()) > 1:
-        if len(remove_punctuation(author.split()[1])) > 1:
-            return remove_punctuation(author.split()[1])
-        elif len(remove_punctuation(author.split()[0])) > 1:
-            return remove_punctuation(author.split()[0])
-        elif len(author.split()) > 2:
-            return remove_punctuation(author.split()[2])
-    else:
-        return remove_punctuation(author)
+def format_author(author):
+    no_punctuation = remove_punctuation(author)
+    formatted_names = no_punctuation.split(" ")
+    initials_particles = []
+    for name in formatted_names:
+        if len(name) == 1:
+            initials_particles += name
+        if name in ["le", "la", "de", "di"]:
+            initials_particles += name
+    if len(initials_particles) > 0:
+        for initial in initials_particles:
+            formatted_names.remove(initial)
+    return formatted_names
 
 
 def format_title(string):
@@ -90,10 +93,11 @@ for citation in metadata_soup.find_all("sequence"):
                 book["citation_title"] = xml_title
                 title_matches.append({"citation": formatted_citation, "book": book})
                 if citation.author is not None:
-                    xml_author = get_surname(citation.author.string.lower())
+                    xml_author_names = format_author(citation.author.string.lower())
                     dict_author = remove_punctuation(book["author"].lower())
-                    if xml_author in dict_author:
-                        author_matches.append({"citation": formatted_citation, "book": book})
+                    for name in xml_author_names:
+                        if name in dict_author:
+                            author_matches.append({"citation": formatted_citation, "book": book})
                 if citation.date is not None:
                     xml_date = remove_punctuation(citation.date.string)
                     dict_date = book["date"]
@@ -115,17 +119,17 @@ print("\n\n---AUTHOR AND TITLE MATCHES---")
 for match in author_matches:
     if match not in perfect_matches:
         print("\n" + match["citation"])
-        print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " " + match["book"]["mmsid"])
+        print(f"⮩ {match['book']['location']}: {match['book']['classmark']} ~ {match['book']['author']}, {match['book']['title']} ({match['book']['date']}) [{match['book']['mmsid']}]")
 
 print("\n\n---DATE AND TITLE MATCHES---")
 for match in date_matches:
     if match not in perfect_matches:
         print("\n" + match["citation"])
-        print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " " + match["book"]["mmsid"])
+        print(f"⮩ {match['book']['location']}: {match['book']['classmark']} ~ {match['book']['author']}, {match['book']['title']} ({match['book']['date']}) [{match['book']['mmsid']}]")
 
 print("\n\n---TITLE MATCHES---")
 for match in title_matches:
     if match not in author_matches:
         if match not in date_matches:
             print("\n" + match["citation"])
-            print("⮩ " + match["book"]["location"] + ": " + match["book"]["classmark"] + " - " + match["book"]["author"] + ", " + match["book"]["title"] + " " + match["book"]["mmsid"])
+            print(f"⮩ {match['book']['location']}: {match['book']['classmark']} ~ {match['book']['author']}, {match['book']['title']} ({match['book']['date']}) [{match['book']['mmsid']}]")
