@@ -43,6 +43,7 @@ with open("metadata.xml", encoding="utf8") as file:
 title_matches = []
 author_matches = []
 date_matches = []
+too_many_matches = []
 no_matches = []
 
 total_citations = 0
@@ -88,10 +89,12 @@ for citation in metadata_soup.find_all("sequence"):
         citation_date = "[no date]"
     formatted_citation = main_entry + " " + citation_titles[0] + " (" + remove_punctuation(citation_date) + ")"
     match = False
+    number_of_title_matches = 0
     for book in shelflist_dicts:
         dict_title = format_title(book["title"])
         for xml_title in xml_titles:
             if xml_title == dict_title or xml_title in dict_title:
+                number_of_title_matches += 1
                 match = True
                 book["citation_title"] = xml_title
                 title_matches.append({"citation": formatted_citation, "book": book})
@@ -106,6 +109,9 @@ for citation in metadata_soup.find_all("sequence"):
                     dict_date = book["date"]
                     if xml_date == dict_date:
                         date_matches.append({"citation": formatted_citation, "book": book})
+    if number_of_title_matches > 8:
+        too_many_matches.append(formatted_citation)
+        continue
     if match is False:
         no_matches.append(formatted_citation)
 
@@ -136,8 +142,13 @@ print("\n\n---TITLE MATCHES---")
 for match in title_matches:
     if match not in author_matches:
         if match not in date_matches:
-            print("\n" + match["citation"])
-            print(f"⮩ {match['book']['location']}: {match['book']['classmark']} ~ {match['book']['author']}, {match['book']['title']} ({match['book']['date']}) [{match['book']['mmsid']}]")
+            if match["citation"] not in too_many_matches:
+                print("\n" + match["citation"])
+                print(f"⮩ {match['book']['location']}: {match['book']['classmark']} ~ {match['book']['author']}, {match['book']['title']} ({match['book']['date']}) [{match['book']['mmsid']}]")
+
+print("\n\n---TOO MANY MATCHES - UNRELIABLE---")
+for citation in too_many_matches:
+    print(f"⮩ {citation}")
 
 print("\n\n---NOT MATCHES---")
 for citation in no_matches:
