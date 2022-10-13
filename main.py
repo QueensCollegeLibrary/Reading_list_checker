@@ -18,7 +18,7 @@ def format_author(author):
     for name in formatted_names:
         if len(name) == 1:
             initials_particles.append(name)
-        if name in ["le", "la", "de", "di"]:
+        if name in ["le", "la", "de", "di", "ed"]:
             initials_particles.append(name)
     if len(initials_particles) > 0:
         for initial in initials_particles:
@@ -101,9 +101,12 @@ for citation in metadata_soup.find_all("sequence"):
                 if citation.author is not None:
                     xml_author_names = format_author(citation.author.string.lower())
                     dict_author = remove_punctuation(book["author"].lower())
+                    author_match = False
                     for name in xml_author_names:
                         if name in dict_author:
-                            author_matches.append({"citation": formatted_citation, "book": book})
+                            author_match = True
+                    if author_match is True:
+                        author_matches.append({"citation": formatted_citation, "book": book})
                 if citation.date is not None:
                     xml_date = remove_punctuation(citation.date.string)
                     dict_date = book["date"]
