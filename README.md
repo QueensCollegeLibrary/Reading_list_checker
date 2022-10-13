@@ -47,7 +47,7 @@ Upload the “shelflist_dicts.txt” (if you haven’t already)
 
 Run the code to see results
 
-# 4/ Interpreting the results
+# 4. Interpreting the results
 The code compares the following data elements:
 
 Title: the code compares the title string in the reading list reference with the 245 field of bib records (excluding $c), excluding capitalisation and punctuation. If a title from your holdings contains the reading list title string, it will be a title match
